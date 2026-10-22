@@ -45,16 +45,25 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .hero { background: linear-gradient(to bottom, var(--bg-light-blue), var(--white)); padding-block: 64px 48px; }
 .hero-grid { display: grid; gap: 24px; }
 .panel { background: var(--white); border-radius: 16px; box-shadow: var(--shadow-hlcard); border: 1px solid var(--gray-200); padding: 24px; display: grid; gap: 16px; align-content: start; min-width: 0; }
-.big { font-size: 48px; line-height: 1; font-weight: 700; letter-spacing: var(--tracking-hh); font-variant-numeric: tabular-nums; }
+.big { font-size: 64px; line-height: 1; font-weight: 700; letter-spacing: var(--tracking-hh); font-variant-numeric: tabular-nums; }
 .statusbar { display: flex; gap: 2px; height: 12px; border-radius: 9999px; overflow: hidden; }
 .statusbar span { display: block; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .legend div { display: flex; align-items: center; gap: 8px; color: var(--txt-light); }
 .legend b { color: var(--txt); font-variant-numeric: tabular-nums; }
+.sgroups { display: grid; gap: 16px; }
+.sgroup { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+.sgroup-h { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.sgroup-h b { font-variant-numeric: tabular-nums; }
+.prio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.prio > div { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.prio-h { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--txt-lighter); }
+.prio-none { font-size: 12px; color: var(--txt-lighter); }
 .dot { width: 10px; height: 10px; border-radius: 9999px; flex: none; }
 
-.attn { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.attn li { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: start; padding: 10px 12px; border-radius: 8px; background: var(--bg-gray); }
+.attn-panel { grid-template-rows: auto 1fr; align-content: stretch; }
+.attn { display: grid; grid-auto-rows: 1fr; gap: 12px; margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 24px; }
+.attn li { display: grid; grid-template-columns: 72px 1fr; gap: 8px 12px; align-content: center; padding: 16px 20px; border-radius: 12px; background: var(--bg-gray); }
 .attn li.over { background: var(--status-error-bg); }
 .attn .when { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .attn li.over .when { color: var(--status-error-text); }
@@ -70,7 +79,6 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .stage .n { font-size: 12px; font-weight: 600; color: var(--primary-600); letter-spacing: 1px; text-transform: uppercase; }
 .stage strong { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: var(--tracking-h); }
 .stage .c { color: var(--txt-light); }
-.loop { color: var(--txt-light); font-size: 13px; }
 
 /* Initiative cards */
 .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
@@ -167,10 +175,10 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
       <h1>CD Progress Tracker</h1>    </div>
     <div class="hero-grid">
       <div class="panel" aria-label="Portfolio status">
-        <div style="display:flex;align-items:baseline;gap:12px"><span class="big" id="total"></span><span class="muted">initiatives in flight</span></div>
+        <div style="display:flex;align-items:baseline;gap:12px"><span class="big" id="total"></span><span class="muted" style="font-size:20px;line-height:28px">initiatives in flight</span></div>
         <div class="statusbar" id="statusbar"></div>
-        <div class="legend" id="statuslegend"></div>      </div>
-      <div class="panel">
+        <div class="sgroups" id="statuslegend"></div>      </div>
+      <div class="panel attn-panel">
         <h3>Upcoming Deadlines</h3>
         <ul class="attn" id="attn"></ul>
       </div>
@@ -184,9 +192,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
       <div class="tag">How the work fits together</div>
       <h2>CD Project Pillars</h2>
     </div>
-    <nav class="flywheel" id="flywheel" aria-label="Stages"></nav>
-    <div class="loop">Recognition in Reward raises the bar that Listen measures against, so the cycle repeats.</div>
-  </div>
+    <nav class="flywheel" id="flywheel" aria-label="Stages"></nav>  </div>
 </section>
 
 <div id="stages"></div>
@@ -240,6 +246,16 @@ const STATUS = {
   live: { label: "Live", color: "var(--secondary-500)" },
   building: { label: "Building", color: "var(--primary-500)" },
   approval: { label: "Awaiting approval", color: "var(--status-warning)" },
+};
+const PRIORITIES = ["High", "Medium", "Low"];
+const PRIORITY = {
+  "Cortex": "High", "LLM Sentiment Analyser": "High", "Cross-Team Audit": "Medium", "Soft Skill Sessions": "Medium",
+  "Falcon Image Generator": "Low", "Spotlight": "Low", "CD Pulse": "Low",
+  "Feedback Pipeline": "High", "Ops–Advisory Communication": "High", "Call First Approach": "High",
+  "Lead Prioritisation using Sentiment Analyser": "High", "Advisor Intent Optimization": "High",
+  "Video Engagement Project": "Medium", "Ops Profile Pages": "Medium", "Infographics": "Medium", "Advisor Quizzes": "Medium",
+  "Claims Checklist": "Low", "6 Star": "Low",
+  "6 Star – HNB": "Low",
 };
 
 const I = [
@@ -419,11 +435,16 @@ $("total").textContent = I.length;
 const counts = Object.fromEntries(Object.keys(STATUS).map(k => [k, I.filter(x => x.status === k).length]));
 $("statusbar").innerHTML = Object.entries(STATUS).map(([k, s]) => `<span style="flex:${counts[k]};background:${s.color}" title="${s.label}: ${counts[k]}"></span>`).join("");
 const overdueCount = dated.filter(d => dueState(d.due) === "over").length;
-$("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div><span class="dot" style="background:${s.color}"></span><b>${counts[k]}</b> ${s.label.toLowerCase()}</div>`).join("")
-  + `<div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div>`;
+$("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div class="sgroup">
+    <div class="sgroup-h"><span class="dot" style="background:${s.color}"></span><b>${counts[k]}</b> ${s.label}</div>
+    <div class="prio">${PRIORITIES.map(p => {
+      const list = I.filter(x => x.status === k && PRIORITY[x.name] === p);
+      return `<div><div class="prio-h">${p}</div><div class="chips">${list.length ? list.map(x => `<span class="chip">${x.name}</span>`).join("") : `<span class="prio-none">None</span>`}</div></div>`;
+    }).join("")}</div></div>`).join("")
+  + (overdueCount ? `<div class="legend"><div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div></div>` : "");
 
 const attn = dated.filter(d => dueState(d.due) !== "later");
-$("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="projpill">${d.who}</span><span class="when">${fmt(d.due)}</span><span class="step">${d.t}</span><span class="who">${relative(d.due)}</span></li>`).join("")
+$("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="projpill">${d.who}</span><span class="when">${fmt(d.due)}</span><span class="step">${d.t}</span></li>`).join("")
   : `<li><span class="when">✓</span><span>Nothing overdue or due in the next ${SOON_DAYS} days.</span></li>`;
 
 // ---- flywheel + stages ----
