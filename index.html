@@ -497,7 +497,7 @@ $("stages").innerHTML = STAGES.map((s, i) => {
   return `<section class="band ${i % 2 ? "gray" : ""}" id="${s.id}"><div class="wrap">
     <div class="head"><div class="tag">Stage ${i + 1} of 4</div><h2>${s.name}</h2><p class="lede">${s.purpose}</p></div>
     <div class="grid">${items.map(card).join("")}</div>
-    ${prog.length ? `<div class="program"><div class="head"><div class="tag">Program · ${prog.length} workstreams</div><h3>Ops Revamp</h3><p class="why" style="max-width:62ch">Fixing how Ops talks to customers and hands cases to Advisory: faster handovers, a human face, clearer timelines and calls when chat isn't enough.</p></div><div class="grid">${prog.map(card).join("")}</div></div>` : ""}
+    ${prog.length ? `<div class="program"><div class="head"><div class="tag">${prog.length} workstreams</div><h3>Ops Revamp</h3><p class="why" style="max-width:62ch">Fixing how Ops talks to customers and hands cases to Advisory: faster handovers, a human face, clearer timelines and calls when chat isn't enough.</p></div><div class="grid">${prog.map(card).join("")}</div></div>` : ""}
   </div></section>`;
 }).join("");
 
