@@ -131,7 +131,9 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
 .tl li.over .date { color: var(--status-error-text); }
 .tl li.soon .rail::after { background: var(--status-warning); }
 .tl .items { padding-block: 10px; display: grid; gap: 8px; }
-.tl .item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; }
+.tl .item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.tl .item > div { min-width: 0; }
+.tl .stagepill { flex: none; max-width: 45%; text-align: center;font-size: 12px; line-height: 16px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; background: var(--primary-50); color: var(--primary-700); }
 .tl .item small { display: block; color: var(--txt-light); font-size: 12px; }
 .tl li.over .item { background: var(--status-error-bg); border-color: transparent; }
 
@@ -505,5 +507,5 @@ select(max.b, max.t);
 // ---- timeline ----
 const byDate = dated.reduce((m, d) => ((m[d.due] ||= []).push(d), m), {});
 $("tl").innerHTML = Object.entries(byDate).map(([due, items]) => `<li class="${dueState(due)}"><span class="date">${fmt(due)}</span><span class="rail"></span>
-  <div class="items">${items.map(d => `<div class="item">${d.t}<small>${d.who} · ${relative(d.due)}</small></div>`).join("")}</div></li>`).join("");
+  <div class="items">${items.map(d => `<div class="item"><div>${d.t}<small>${relative(d.due)}</small></div><span class="stagepill">${d.who}</span></div>`).join("")}</div></li>`).join("");
 </script>
