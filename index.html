@@ -51,14 +51,16 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .legend div { display: flex; align-items: center; gap: 8px; color: var(--txt-light); }
 .legend b { color: var(--txt); font-variant-numeric: tabular-nums; }
-.sgroups { display: grid; gap: 16px; }
-.sgroup { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
-.sgroup-h { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.sgroup-h b { font-variant-numeric: tabular-nums; }
-.prio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.prio > div { display: grid; gap: 6px; align-content: start; min-width: 0; }
-.prio-h { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--txt-lighter); }
-.prio-none { font-size: 12px; color: var(--txt-lighter); }
+.kanban { display: grid; gap: 20px; }
+.kcol { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.kcol-h { display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: var(--tracking-h); padding-bottom: 4px; }
+.kcol-h .n { color: var(--txt-light); font-weight: 500; font-variant-numeric: tabular-nums; }
+.kcard { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--gray-200); background: var(--white); font-weight: 500; }
+.kcard span:first-child { min-width: 0; }
+.ptag { flex: none; font-size: 12px; line-height: 16px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
+.ptag.High { background: var(--primary-50); color: var(--primary-700); }
+.ptag.Medium { background: var(--bg-gray); color: var(--txt-light); }
+.ptag.Low { color: var(--txt-lighter); }
 .dot { width: 10px; height: 10px; border-radius: 9999px; flex: none; }
 
 .attn-panel { grid-template-rows: auto 1fr; align-content: stretch; }
@@ -153,6 +155,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
   h1 { font-size: 44px; line-height: 52px; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flywheel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kanban { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   .band { padding-block: 64px; }
 }
 @media (min-width: 1144px) {
@@ -160,7 +163,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
   h2 { font-size: 36px; line-height: 40px; }
   .band { padding-block: 80px; }
   .hero { padding-block: 96px 64px; }
-  .hero-grid { grid-template-columns: 5fr 7fr; }
+  .attn { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .flywheel { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .stage:not(:last-child)::after { content: "→"; position: absolute; right: -22px; top: 50%; transform: translateY(-50%); color: var(--primary-500); font-size: 18px; font-weight: 600; }
@@ -177,7 +180,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
       <div class="panel" aria-label="Portfolio status">
         <div style="display:flex;align-items:baseline;gap:12px"><span class="big" id="total"></span><span class="muted" style="font-size:20px;line-height:28px">initiatives in flight</span></div>
         <div class="statusbar" id="statusbar"></div>
-        <div class="sgroups" id="statuslegend"></div>      </div>
+        <div class="kanban" id="statuslegend"></div>      </div>
       <div class="panel attn-panel">
         <h3>Upcoming Deadlines</h3>
         <ul class="attn" id="attn"></ul>
@@ -435,13 +438,12 @@ $("total").textContent = I.length;
 const counts = Object.fromEntries(Object.keys(STATUS).map(k => [k, I.filter(x => x.status === k).length]));
 $("statusbar").innerHTML = Object.entries(STATUS).map(([k, s]) => `<span style="flex:${counts[k]};background:${s.color}" title="${s.label}: ${counts[k]}"></span>`).join("");
 const overdueCount = dated.filter(d => dueState(d.due) === "over").length;
-$("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div class="sgroup">
-    <div class="sgroup-h"><span class="dot" style="background:${s.color}"></span><b>${counts[k]}</b> ${s.label}</div>
-    <div class="prio">${PRIORITIES.map(p => {
-      const list = I.filter(x => x.status === k && PRIORITY[x.name] === p);
-      return `<div><div class="prio-h">${p}</div><div class="chips">${list.length ? list.map(x => `<span class="chip">${x.name}</span>`).join("") : `<span class="prio-none">None</span>`}</div></div>`;
-    }).join("")}</div></div>`).join("")
-  + (overdueCount ? `<div class="legend"><div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div></div>` : "");
+const byPriority = (a, b) => PRIORITIES.indexOf(PRIORITY[a.name]) - PRIORITIES.indexOf(PRIORITY[b.name]);
+$("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div class="kcol">
+    <div class="kcol-h"><span class="dot" style="background:${s.color}"></span>${s.label} <span class="n">${counts[k]}</span></div>
+    ${I.filter(x => x.status === k).sort(byPriority).map(x => `<div class="kcard"><span>${x.name}</span><span class="ptag ${PRIORITY[x.name]}">${PRIORITY[x.name]}</span></div>`).join("")}
+  </div>`).join("");
+if (overdueCount) $("statuslegend").insertAdjacentHTML("afterend", `<div class="legend"><div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div></div>`);
 
 const attn = dated.filter(d => dueState(d.due) !== "later");
 $("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="projpill">${d.who}</span><span class="when">${fmt(d.due)}</span><span class="step">${d.t}</span></li>`).join("")
