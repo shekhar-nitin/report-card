@@ -230,8 +230,8 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
 
 
 <script>
-const T = { falcon: "Falcon", bliss: "Bliss", hnb: "Health NB", hren: "Health Renewals", hops: "Health Ops", term: "Term Ops", claims: "Claims" };
-const ALL6 = ["falcon", "bliss", "hnb", "hren", "term", "claims"];
+const T = { falcon: "Falcon", bliss: "Bliss", hren: "Health Renewals", hops: "Health Ops", term: "Term Ops", claims: "Claims" };
+const ALL6 = ["falcon", "bliss", "hops", "hren", "term", "claims"];
 const B = {
   clarity: "Lack of clarity",
   delayed: "Delayed response",
@@ -261,7 +261,7 @@ const PRIORITY = {
   "Lead Prioritisation using Sentiment Analyser": "High", "Advisor Intent Optimization": "High", "Health Video Engagement": "High",
   "Ops Profile Pages": "Medium", "Infographics": "Medium", "Advisor Quizzes": "Medium",
   "Claims Checklist": "Medium", "6 Star": "Medium",
-  "6 Star – HNB": "Medium",
+  "6 Star – Health Ops": "Medium",
   "Ops Revamp": "High",
 };
 
@@ -291,7 +291,7 @@ const I = [
     why: "Escalations and agitated leads were only caught after the fact, with no way to scan chat volume and intervene before a case escalated.",
     what: ["Locally hosted LLM that processes service-team chats","Flags potential / tentative escalations and agitated leads","Action Centre process for teams to pacify those leads and prioritise resolution","System prompts optimised to cut false positives","Core build complete; Action Centre tracking metrics and output verification in progress"],
     kpis: ["Reduction in actual escalations", "Improvement in overall customer experience"],
-    buckets: ["escal", "delayed", "reactive"], teams: ["hnb", "hren", "term", "claims"],
+    buckets: ["escal", "delayed", "reactive"], teams: ["hops", "hren", "term", "claims"],
     next: [
       { t: "Integrate JEV" },
       { t: "Reduce false positives" },
@@ -303,7 +303,7 @@ const I = [
     why: "Team leads had little visibility into how other teams handle customers or into gaps in their own workflows.",
     what: ["Hand-picked positive and negative sentiment cases sent to every customer-facing dept head","Covers each head's own department and other departments","TLs review via form; CD adds a neutral perspective and RCA per cycle","Cycles 1–3 run; V2 tool and design in progress"],
     kpis: ["Adoption of inter-dept working processes", "Self-evaluation of cases to identify issues in own dept"],
-    buckets: ["handover"], teams: ALL6, next: [], links: [] },
+    buckets: ["handover"], teams: ALL6, next: [], links: [["Open audit", "https://claude.ai/artifact/FJ2tqvoiph6J8PPwxZh6Ad#actionables"]] },
   { name: "Advisor Quizzes", stage: "diagnose", status: "building", progress: 20,
     why: "Gaps in advisor product knowledge on edge cases, with no accountability for low knowledge scores.",
     what: ["Restart advisor quizzes based on edge cases and product updates","Finalise format, frequency and weightage","Set passing threshold and score bands","Penalties for low scores","Operating guidelines with Training"],
@@ -354,20 +354,20 @@ const I = [
     why: "Move communication from long text to clear visuals.",
     what: ["Generates templated images for customer communication","Detailed comparison images and premium-payment snips","Term logos and IC member addition","Text wrapping in backlog"],
     kpis: ["Adoption of visual templates in communication (inferred)"],
-    buckets: [], teams: [], teamNote: "Advisory / Ops (inferred)",
+    buckets: [], teams: [], teamNote: ["Advisory", "Ops"],
     next: [], links: [] },
   { name: "Claims Checklist", stage: "fix", status: "building", progress: 85,
     why: "Customers lacked clarity on claims requirements (inferred).",
     what: ["Customer-facing checklist for Claims","Foundational design done","Content collection from Claims in progress (backlog)"],
     kpis: ["Reduction in claims-related clarity complaints (inferred)"],
     buckets: ["clarity"], teams: ["claims"],
-    next: [{ t: "Incorporate changes from the Claims team's final product review" }, { t: "Go live (expected next week)" }], links: [] },
+    next: [{ t: "Incorporate changes from the Claims team's final product review" }, { t: "Go live (expected next week)" }], links: [["Open checklist", "https://ops-image-gen.vercel.app"]] },
 
   { name: "Ops–Advisory Communication", stage: "fix", program: true, status: "building", progress: 85,
     why: "Health Ops raised issues with Bliss, and communication gaps between Ops and Advisory were hurting customers.",
     what: ["Fix communication and case handover between Ops and Advisory","POV sessions with Term / Health Ops and advisors","Health Ops' doc on Bliss concerns; mentor sessions for Bliss & Falcon","SOP, case ownership and standard handover messages","Exact case-handover timelines","TAT monitoring dashboard via Action Centre","DittoHQ portal changes so advisors can see case progress and respond to leads themselves"],
     kpis: ["Shorter case-handover TAT", "Fewer Ops–Advisory communication gaps / better inter-dept communication efficiency"],
-    buckets: ["delayed", "handover"], teams: ["hops", "term", "falcon", "bliss"],
+    buckets: ["delayed", "handover"], teams: ["hops", "falcon", "bliss"],
     next: [
       { t: "Close the remaining DittoHQ portal updates" },
       { t: "Implement exact case-handover timelines" },
@@ -379,7 +379,7 @@ const I = [
     why: "Leads felt a 'stranger vibe' with Ops owners, unlike the personal connection they have with advisors.",
     what: ["Personalised, ops-owner-specific profile pages","Leads know who they are talking to, for a concierge-like experience","Design and PRD completed and handed to Tech","Development and deployment in progress"],
     kpis: ["Stronger personal connection between leads and Ops owners", "Fewer impersonal-response complaints"],
-    buckets: ["robotic"], teams: ["hops", "hren", "term", "claims"],
+    buckets: ["robotic"], teams: ["hops", "hren"],
     next: [
       { t: "Tech team to complete development and deployment", due: "2026-10-31" },
       { t: "Complete data collection from Claims Ops owners" },
@@ -389,14 +389,14 @@ const I = [
     why: "Post-payment communication was text-heavy, reactive and lacked timelines, leaving leads unclear on where their case stood.",
     what: ["TAT / timeline infographics for expectation setting","Templates rewritten to be clear, concise and less text-heavy","Hybrid text + infographic approach for post-payment communication","Pro-active updates and committed timelines for every action item"],
     kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach", "Lower detractor %"],
-    buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops", "term"],
+    buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops"],
     next: [{ t: "Enforce committed timelines for every action item" }, { t: "Explain rejection / counter-offer reasons to leads and contest where viable" }],
     links: [["Open generator", "https://ops-image-gen.vercel.app"]] },
   { name: "Call First Approach", stage: "fix", program: true, status: "building", progress: 50,
     why: "Complex cases handled only over chat caused confusion and negative feedback, including complaints about not receiving calls.",
     what: ["Identify situations that need a call","SOPs so service teams call leads in moderately to very complicated cases (e.g. rejection, counter-offer, long chat threads)","Call tracking metrics set up for all teams"],
     kpis: ["Reduce negative feedback in the 'call not received' bucket and overall negative feedback via pacifying / explanation calls"],
-    buckets: ["call", "clarity", "reactive"], teams: ["hnb", "hren", "term", "claims"],
+    buckets: ["call", "clarity", "reactive"], teams: ["hops", "hren"],
     next: [
       { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-10-27" },
       { t: "Ensure call-first approach for complex Ops cases (rejection, counter-offer, long chat threads)" },
@@ -405,33 +405,33 @@ const I = [
     why: "Agitated leads and likely escalations were handled in normal queue order; the sentiment analyser already flags them, so Ops can act on those cases first.",
     what: ["Uses the LLM sentiment analyser's flags (potential / tentative escalations, agitated leads)","Prioritises those Ops cases","Agitated leads are pacified and resolved first through the Action Centre process"],
     kpis: ["Reduction in tentative and actual escalations", "Faster resolution TAT for flagged / agitated leads (inferred)", "Lower detractor % among flagged leads (inferred)"],
-    buckets: ["escal", "delayed", "reactive"], teams: ["hops", "term", "claims"],
+    buckets: ["escal", "delayed", "reactive"], teams: ["hops"],
     next: [
       { t: "Finalise the Action Centre process and tracking metrics for all teams" },
       { t: "Complete output verification of flagged chats" },
       { t: "Automate the sentiment analyser and map tentative escalations to it" },
       { t: "Add context insertion to the sentiment analyser" },
     ], links: [] },
-  { name: "6 Star – HNB", stage: "fix", program: true, status: "building", progress: 65,
+  { name: "6 Star – Health Ops", stage: "fix", program: true, status: "building", progress: 65,
     why: "Health Ops owners delivering 6-star experiences had gone unrewarded under quarterly StarBonus restrictions.",
-    what: ["Extends the 6 Star recognition model to Health New Business","SOP formulated","Deployment approach and pilot plan in final stages","Awaiting manager approval"],
+    what: ["Extends the 6 Star recognition model to Health Ops","SOP formulated","Deployment approach and pilot plan in final stages","Awaiting manager approval"],
     kpis: ["Better Health CX", "Recognition for Ops owners who consistently deliver 6-star experiences"],
-    buckets: ["delayed", "reactive"], teams: ["hnb"],
+    buckets: ["delayed", "reactive"], teams: ["hops"],
     next: [{ t: "Finalise deployment & pilot plan" }, { t: "Secure manager approval" }, { t: "Launch pilot" }], links: [] },
 
   { name: "6 Star", stage: "reward", status: "live", progress: 70,
     why: "Ops owners were acting as information relays instead of taking ownership of customer issues.",
-    what: ["Encourage ops owners to act as true mediators and go above and beyond","Objective 6 Star SOP with eligibility gates for case selection","Integrated with the Star Bonus system","New quality stars for Health NB; 6 Star for Health planned"],
+    what: ["Encourage ops owners to act as true mediators and go above and beyond","Objective 6 Star SOP with eligibility gates for case selection","Integrated with the Star Bonus system","New quality stars for Health Ops; 6 Star for Health planned"],
     kpis: ["Reduce negative feedback in the delayed responses and reactive approach buckets"],
     buckets: ["delayed", "reactive"], teams: ["term"],
     next: [
       { t: "Integrate the updated 6 Star SOP into the new StarBonus system" },
       { t: "Get the new quality stars finalised" },
-      { t: "Extend 6 Star to Health (HNB pilot pending manager approval)" },
+      { t: "Extend 6 Star to Health (Health Ops pilot pending manager approval)" },
     ], links: [] },
-  { name: "Spotlight", stage: "reward", status: "live", progress: 85,
+  { name: "Spotlight", stage: "reward", status: "live", progress: 100,
     why: "Recognise high performers and spread their best practices to raise service standards across teams.",
-    what: ["Department-wise feature recognising high-performing advisors and ops owners","Objective, metric-backed criteria (QA score, CSAT, resolution TAT) and real customer reviews","Rolled out for Term Ops, Renewals, Bliss, HNB and Falcon"],
+    what: ["Department-wise feature recognising high-performing advisors and ops owners","Objective, metric-backed criteria (QA score, CSAT, resolution TAT) and real customer reviews","Rolled out for Term Ops, Renewals, Bliss, Health Ops and Falcon"],
     kpis: ["QA score, CSAT and resolution TAT of featured teams; adoption of highlighted best practices (inferred, not in tracker)"],
     buckets: [], teams: ALL6, next: [], links: [] },
   { name: "CD Pulse", stage: "reward", status: "live", progress: 100,
@@ -483,7 +483,7 @@ $("flywheel").innerHTML = STAGES.map(s => {
   return `<a class="stage" href="#${s.id}"><strong>${s.name}</strong><span class="c">${s.purpose}</span></a>`;
 }).join("");
 
-const teamChips = x => (x.teamNote ? [x.teamNote] : x.teams.map(t => T[t])).map(t => `<span class="chip">${t}</span>`).join("");
+const teamChips = x => (x.teamNote ? x.teamNote :x.teams.map(t => T[t])).map(t => `<span class="chip">${t}</span>`).join("");
 function card(x) {
   const st = STATUS[x.status];
   return `<article class="card">
@@ -518,7 +518,7 @@ document.addEventListener("toggle", e => {
 }, true);
 
 // ---- heatmap ----
-const TEAM_ORDER = ["falcon", "bliss", "hnb", "hren", "hops", "term", "claims"];
+const TEAM_ORDER = ["falcon", "bliss", "hops", "hren", "term", "claims"];
 const SEQ = [["var(--bg-gray)", "var(--txt-lighter)"], ["var(--primary-100)", "var(--txt)"], ["var(--primary-200)", "var(--txt)"],
   ["var(--primary-300)", "var(--txt)"], ["var(--primary-600)", "var(--white)"], ["var(--primary-700)", "var(--white)"]];
 const who = (b, t) => I.filter(x => x.buckets.includes(b) && x.teams.includes(t));
