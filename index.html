@@ -59,6 +59,9 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .attn .when { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .attn li.over .when { color: var(--status-error-text); }
 .attn .who { font-size: 12px; line-height: 16px; color: var(--txt-light); grid-column: 2; }
+.attn .projpill { grid-row: 1; grid-column: 2; justify-self: start; }
+.attn .when { grid-row: 1; grid-column: 1; align-self: center; }
+.attn .step { grid-column: 2; }
 
 /* Flywheel */
 .flywheel { display: grid; gap: 12px; grid-template-columns: 1fr; }
@@ -133,7 +136,8 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
 .tl .items { padding-block: 10px; display: grid; gap: 8px; }
 .tl .item { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .tl .item > div { min-width: 0; }
-.tl .stagepill { flex: none; max-width: 45%; text-align: center;font-size: 12px; line-height: 16px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; background: var(--primary-50); color: var(--primary-700); }
+.projpill { font-size: 12px; line-height: 16px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; background: var(--primary-50); color: var(--primary-700); }
+.tl .projpill { flex: none; max-width: 45%; text-align: center; }
 .tl .item small { display: block; color: var(--txt-light); font-size: 12px; }
 .tl li.over .item { background: var(--status-error-bg); border-color: transparent; }
 
@@ -165,9 +169,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
       <div class="panel" aria-label="Portfolio status">
         <div style="display:flex;align-items:baseline;gap:12px"><span class="big" id="total"></span><span class="muted">initiatives in flight</span></div>
         <div class="statusbar" id="statusbar"></div>
-        <div class="legend" id="statuslegend"></div>
-        <div class="muted" id="asof" style="font-size:12px"></div>
-      </div>
+        <div class="legend" id="statuslegend"></div>      </div>
       <div class="panel">
         <h3>Upcoming Deadlines</h3>
         <ul class="attn" id="attn"></ul>
@@ -215,7 +217,6 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
 
 
 <script>
-const AS_OF = "21 Oct 2026";
 const T = { falcon: "Falcon", bliss: "Bliss", hnb: "Health NB", hren: "Health Renewals", hops: "Health Ops", term: "Term Ops", claims: "Claims" };
 const ALL6 = ["falcon", "bliss", "hnb", "hren", "term", "claims"];
 const B = {
@@ -277,7 +278,7 @@ const I = [
     kpis: ["Reduce negative feedback in the bucket of advisors not being able to help in edge cases or alternate requirements"],
     buckets: ["edge"], teams: ["falcon", "bliss"],
     next: [
-      { t: "Finalise format, frequency and weightage of questions", due: "2026-10-27" },
+      { t: "Finalise format, frequency and weightage of questions", due: "2026-11-01" },
       { t: "Identify edge cases to base quizzes on and decide repercussions for low scores" },
       { t: "Set passing threshold and score bands", due: "2026-11-13" },
       { t: "Set operating guidelines with Training", due: "2026-11-30" },
@@ -356,7 +357,7 @@ const I = [
     kpis: ["Reduce negative feedback in the 'call not received' bucket and overall negative feedback via pacifying / explanation calls"],
     buckets: ["call", "clarity", "reactive"], teams: ["hnb", "hren", "term", "claims"],
     next: [
-      { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-10-20" },
+      { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-10-27" },
       { t: "Ensure call-first approach for complex Ops cases (rejection, counter-offer, long chat threads)" },
     ], links: [] },
   { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building",
@@ -420,10 +421,9 @@ $("statusbar").innerHTML = Object.entries(STATUS).map(([k, s]) => `<span style="
 const overdueCount = dated.filter(d => dueState(d.due) === "over").length;
 $("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div><span class="dot" style="background:${s.color}"></span><b>${counts[k]}</b> ${s.label.toLowerCase()}</div>`).join("")
   + `<div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div>`;
-$("asof").textContent = `Tracker as of ${AS_OF} · deadlines checked against ${today.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`;
 
 const attn = dated.filter(d => dueState(d.due) !== "later");
-$("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="when">${fmt(d.due)}</span><span>${d.t}</span><span class="who">${d.who} · ${relative(d.due)}</span></li>`).join("")
+$("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="projpill">${d.who}</span><span class="when">${fmt(d.due)}</span><span class="step">${d.t}</span><span class="who">${relative(d.due)}</span></li>`).join("")
   : `<li><span class="when">✓</span><span>Nothing overdue or due in the next ${SOON_DAYS} days.</span></li>`;
 
 // ---- flywheel + stages ----
@@ -498,5 +498,5 @@ select(max.b, max.t);
 // ---- timeline ----
 const byDate = dated.reduce((m, d) => ((m[d.due] ||= []).push(d), m), {});
 $("tl").innerHTML = Object.entries(byDate).map(([due, items]) => `<li class="${dueState(due)}"><span class="date">${fmt(due)}</span><span class="rail"></span>
-  <div class="items">${items.map(d => `<div class="item"><div>${d.t}<small>${relative(d.due)}</small></div><span class="stagepill">${d.who}</span></div>`).join("")}</div></li>`).join("");
+  <div class="items">${items.map(d => `<div class="item"><div>${d.t}<small>${relative(d.due)}</small></div><span class="projpill">${d.who}</span></div>`).join("")}</div></li>`).join("");
 </script>
