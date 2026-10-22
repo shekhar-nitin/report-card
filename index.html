@@ -61,6 +61,17 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .ptag.High { background: var(--primary-50); color: var(--primary-700); }
 .ptag.Medium { background: var(--bg-gray); color: var(--txt-light); }
 .ptag.Low { color: var(--txt-lighter); }
+.kgroup { display: block; padding: 0; }
+.kgroup > summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; list-style: none; color: var(--txt); font-size: inherit; font-weight: 500; }
+.kgroup > summary::-webkit-details-marker { display: none; }
+.kgroup[open] > summary { margin-bottom: 0; }
+.kgroup small { display: block; font-size: 12px; line-height: 16px; color: var(--txt-light); font-weight: 400; }
+.kright { display: flex; align-items: center; gap: 8px; flex: none; }
+.chev { color: var(--txt-light); transition: transform .15s; }
+.kgroup[open] .chev { transform: rotate(180deg); }
+.kgroup ul { list-style: none; margin: 0; padding: 10px 14px 12px; display: grid; gap: 8px; border-top: 1px solid var(--gray-200); font-size: 13px; line-height: 18px; }
+.kgroup li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
+.kgroup li .dot { width: 8px; height: 8px; }
 .dot { width: 10px; height: 10px; border-radius: 9999px; flex: none; }
 
 .attn-panel { grid-template-rows: auto 1fr; align-content: stretch; }
@@ -252,13 +263,14 @@ const STATUS = {
 };
 const PRIORITIES = ["High", "Medium", "Low"];
 const PRIORITY = {
-  "Cortex": "High", "LLM Sentiment Analyser": "High", "Cross-Team Audit": "Medium", "Soft Skill Sessions": "Medium",
-  "Falcon Image Generator": "Low", "Spotlight": "Low", "CD Pulse": "Low",
-  "Feedback Pipeline": "High", "Ops–Advisory Communication": "High", "Call First Approach": "High",
-  "Lead Prioritisation using Sentiment Analyser": "High", "Advisor Intent Optimization": "High",
-  "Video Engagement Project": "Medium", "Ops Profile Pages": "Medium", "Infographics": "Medium", "Advisor Quizzes": "Medium",
+  "Cortex": "High", "LLM Sentiment Analyser": "High", "Term Video Engagement": "High", "Falcon Image Generator": "High",
+  "Cross-Team Audit": "Medium", "Soft Skill Sessions": "Low", "Spotlight": "Low", "CD Pulse": "Low",
+  "Feedback Pipeline": "High", "Ops–Advisory Communication": "High", "Call First Approach": "Medium",
+  "Lead Prioritisation using Sentiment Analyser": "High", "Advisor Intent Optimization": "High", "Health Video Engagement": "High",
+  "Ops Profile Pages": "Medium", "Infographics": "Medium", "Advisor Quizzes": "Medium",
   "Claims Checklist": "Low", "6 Star": "Low",
-  "6 Star – HNB": "Low",
+  "6 Star – HNB": "Medium",
+  "Ops Revamp": "High",
 };
 
 const I = [
@@ -314,15 +326,22 @@ const I = [
       { t: "Review week-on-week trend and refine flagging criteria", due: "2026-11-30" },
     ], links: [] },
 
-  { name: "Video Engagement Project", stage: "fix", status: "building",
+  { name: "Term Video Engagement", stage: "fix", status: "live",
     why: "Leads lacked clarity on their policies and ideal cover during calls; verbal explanation alone wasn't enough.",
-    what: "Personalised interactive web apps for first and additional call pitches (Health & Term) explaining policies, ideal sum insured/cover, riders and milestones. Health: Activ Yuva integration, maternity comparison and Telugu translation in progress. Term PDF call summary for leads is live.",
+    what: "Personalised interactive web app for first and additional Term call pitches explaining policies, ideal cover, riders and milestones. PDF call summary for leads to take home is live.",
+    kpis: ["Create a visual-aid experience for leads", "Improve conversion % and average QA score for advisors", "Improve additional call %"],
+    buckets: ["clarity"], teams: ["falcon", "bliss"], next: [],
+    links: [["Open app", "https://term-video-engagement-advisory.vercel.app"]] },
+  { name: "Health Video Engagement", stage: "fix", status: "building",
+    why: "Leads lacked clarity on their policies and ideal cover during calls; verbal explanation alone wasn't enough.",
+    what: "Personalised interactive web app for first and additional Health call pitches explaining policies, ideal sum insured, riders and milestones. Activ Yuva integration, maternity comparison and Telugu translation in progress.",
     kpis: ["Create a visual-aid experience for leads", "Improve conversion % and average QA score for advisors", "Improve additional call %"],
     buckets: ["clarity"], teams: ["falcon", "bliss"],
     next: [
-      { t: "Health: complete Activ Yuva integration and discount display, maternity plans comparison, lead-profiling flow questions and Telugu translation" },
-      { t: "Health: build the restoration & bonus page" },    ],
-    links: [["Term app", "https://term-video-engagement-advisory.vercel.app"], ["Health app", "https://ditto-health-insurance-gray.vercel.app/"]] },
+      { t: "Complete Activ Yuva integration and discount display, maternity plans comparison, lead-profiling flow questions and Telugu translation" },
+      { t: "Build the restoration & bonus page" },
+    ],
+    links: [["Open app", "https://ditto-health-insurance-gray.vercel.app/"]] },
   { name: "Soft Skill Sessions", stage: "fix", status: "live",
     why: "Recurring individual-level soft-skill misses (tone, empathy) were showing up in negative feedback.",
     what: "1-1 sessions between the CX Champion and the case owner: replay the actual case, isolate communication gaps, correct tone and empathy, agree the approach for next time; improvement verified through QA audits of later cases.",
@@ -439,9 +458,16 @@ const counts = Object.fromEntries(Object.keys(STATUS).map(k => [k, I.filter(x =>
 $("statusbar").innerHTML = Object.entries(STATUS).map(([k, s]) => `<span style="flex:${counts[k]};background:${s.color}" title="${s.label}: ${counts[k]}"></span>`).join("");
 const overdueCount = dated.filter(d => dueState(d.due) === "over").length;
 const byPriority = (a, b) => PRIORITIES.indexOf(PRIORITY[a.name]) - PRIORITIES.indexOf(PRIORITY[b.name]);
+const ptag = name => `<span class="ptag ${PRIORITY[name]}">${PRIORITY[name]}</span>`;
+// Ops Revamp shows as one Building card with its workstreams in a dropdown; 6 Star – HNB keeps its own Awaiting approval card.
+const OPS = I.filter(x => x.program);
+const kanbanItems = k => [...I.filter(x => x.status === k && !(x.program && k === "building")),
+  ...(k === "building" ? [{ name: "Ops Revamp", subs: OPS }] : [])];
+const opsCard = x => `<details class="kcard kgroup"><summary><span>${x.name} <small>${x.subs.length} workstreams</small></span><span class="kright">${ptag(x.name)}<span class="chev" aria-hidden="true">▾</span></span></summary>
+  <ul>${x.subs.map(s => `<li><span class="dot" style="background:${STATUS[s.status].color}" title="${STATUS[s.status].label}"></span><span>${s.name}</span>${ptag(s.name)}</li>`).join("")}</ul></details>`;
 $("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div class="kcol">
     <div class="kcol-h"><span class="dot" style="background:${s.color}"></span>${s.label} <span class="n">${counts[k]}</span></div>
-    ${I.filter(x => x.status === k).sort(byPriority).map(x => `<div class="kcard"><span>${x.name}</span><span class="ptag ${PRIORITY[x.name]}">${PRIORITY[x.name]}</span></div>`).join("")}
+    ${kanbanItems(k).sort(byPriority).map(x => x.subs ? opsCard(x) : `<div class="kcard"><span>${x.name}</span>${ptag(x.name)}</div>`).join("")}
   </div>`).join("");
 if (overdueCount) $("statuslegend").insertAdjacentHTML("afterend", `<div class="legend"><div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div></div>`);
 
