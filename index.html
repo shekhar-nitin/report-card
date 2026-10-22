@@ -101,18 +101,13 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .pill::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
 .pill.live { background: var(--status-success-bg); color: var(--secondary-700); }
 .pill.building { background: var(--primary-50); color: var(--primary-700); }
-.pill.approval { background: var(--status-warning-bg); color: var(--txt); }
-.pill.approval::before { background: var(--status-warning); }
 .pill.over { background: var(--status-error-bg); color: var(--status-error-text); }
 .why { margin: 0; color: var(--txt-light); }
 .why b { color: var(--txt); font-weight: 600; }
 .prog { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; font-weight: 600; font-variant-numeric: tabular-nums; }
 .track { height: 8px; border-radius: 9999px; background: var(--primary-50); overflow: hidden; }
 .track span { display: block; height: 100%; border-radius: 9999px; background: var(--primary-500); }
-.nextline { font-size: 13px; padding: 8px 10px; border-radius: 8px; background: var(--bg-gray); }
-.nextline.over { background: var(--status-error-bg); color: var(--status-error-text); }
-.nextline.soon { background: var(--status-warning-bg); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font-size: 12px; line-height: 16px; padding: 3px 8px; border-radius: 9999px; background: var(--bg-gray); color: var(--txt-light); border: 1px solid var(--gray-200); }
 details { border-top: 1px solid var(--gray-200); padding-top: 10px; }
 summary { cursor: pointer; font-weight: 600; color: var(--primary-600); font-size: 13px; }
@@ -166,7 +161,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
   h1 { font-size: 44px; line-height: 52px; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flywheel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kanban { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .kanban { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .band { padding-block: 64px; }
 }
 @media (min-width: 1144px) {
@@ -257,7 +252,6 @@ const STAGES = [
 const STATUS = {
   live: { label: "Live", color: "var(--secondary-500)" },
   building: { label: "Building", color: "var(--primary-500)" },
-  approval: { label: "Awaiting approval", color: "var(--status-warning)" },
 };
 const PRIORITIES = ["High", "Medium", "Low"];
 const PRIORITY = {
@@ -272,7 +266,7 @@ const PRIORITY = {
 };
 
 const I = [
-  { name: "Cortex", stage: "listen", status: "live",
+  { name: "Cortex", stage: "listen", status: "live", progress: 90,
     why: "Feedback was scattered across forms and tickets with no single measurable view of CX quality per team, and negative signals weren't consistently ending in action.",
     what: ["Central engine for feedback processing: feedback from all sources is consolidated, distributed and bucketed across all depts", "Depts receive a DER score and can analyse their feedback and justify detractors", "Depts can also use it as a source to pick up projects and do a health check based on the volume of feedback received", "Single scored, attributed system consolidating feedback from all channels (Google Forms, Freshdesk)", "Promoter / Passive / Detractor classification", "DER score per team by month, quarter and year, with drill-downs", "Auto-flags abnormal weeks with a written dissection", "Attribution transfer workflow and soft-skill cases closed with RCA", "Theme taxonomy with major and minor buckets"],
     kpis: ["DER score optimisation for each team, against targets set from their problem buckets", "RCA all detractors and receive the departmental POV for each of them", "Attribution of detractors to the actual depts to avoid misclassification"],
@@ -283,30 +277,29 @@ const I = [
       { t: "Link buckets to initiatives to track bucket numbers" },
     ],
     links: [["Open Cortex", "https://cortex-main.vercel.app"]] },
-  { name: "Feedback Pipeline", stage: "listen", status: "building",
-    why: "Feedback forms and pipelines were broken or missing (Term Rejected form, Freshdesk sheets, no Claims forms), leaving gaps in CX visibility.",
-    what: ["Maintain and trigger all feedback pipelines (forms, Freshdesk, processor sheets)","Review feedback weekly to maintain buckets","Revive essential non-functional buckets","Add 4 new collection points for Claims","Claims feedback forms are live and the Term Rejected form is fixed"],
+  { name: "Feedback Pipeline", stage: "listen", status: "live", progress: 74,
+    why: "Feedback pipeline is the bread and butter for customer feedback, it needs to be built and maintained to identify new buckets and keep tabs on existing ones.",
+    what: ["Maintain and trigger all feedback pipelines (forms, Freshdesk, processor sheets)","Review feedback weekly to maintain buckets","Bucketize feedback"],
     kpis: ["Track pain points dept-wise and overall to reduce negative feedback in each bucket, identify new buckets and optimise CX in them"],
     buckets: [], teams: ALL6,
     next: [
       { t: "Introduce 4 new feedback collection points for Claims", due: "2026-10-30" },
       { t: "Claims forms: Claims team to raise the automation requirement to the Product team" },
       { t: "Term Rejected/Postponed & Cancelled forms automation: Product team to implement and take live", due: "2026-10-28" },
-      { t: "Fix the duplicate ticket problem" },
-    ], links: [] },
-  { name: "LLM Sentiment Analyser", stage: "listen", status: "live",
+    ], links: [["CSAT Sheet", "https://docs.google.com/spreadsheets/d/1Zi7Oy2WQkacxZl5vas3WOmiUz038SKYsvXgevz6OmA8/edit?usp=sharing"]] },
+  { name: "LLM Sentiment Analyser", stage: "listen", status: "live", progress: 80,
     why: "Escalations and agitated leads were only caught after the fact, with no way to scan chat volume and intervene before a case escalated.",
     what: ["Locally hosted LLM that processes service-team chats","Flags potential / tentative escalations and agitated leads","Action Centre process for teams to pacify those leads and prioritise resolution","System prompts optimised to cut false positives","Core build complete; Action Centre tracking metrics and output verification in progress"],
     kpis: ["Reduction in actual escalations", "Improvement in overall customer experience", "Fewer false positives in flagged chats"],
     buckets: ["escal", "delayed", "reactive"], teams: ["hnb", "hren", "term", "claims"], next: [],
-    links: [["Open analyser", "https://cortex-main.vercel.app/monkey-trainer"]] },
+    links: [["Open outputs", "https://drive.google.com/drive/u/0/folders/1yZcyv-qNzmyHvXPm4dagbJgfhd72VIp0"]] },
 
-  { name: "Cross-Team Audit", stage: "diagnose", status: "live",
+  { name: "Cross-Team Audit", stage: "diagnose", status: "live", progress: 75,
     why: "Team leads had little visibility into how other teams handle customers or into gaps in their own workflows.",
     what: ["Hand-picked positive and negative sentiment cases sent to every customer-facing dept head","Covers each head's own department and other departments","TLs review via form; CD adds a neutral perspective and RCA per cycle","Vibe-coded analysis tool built","Cycles 1–3 run; V2 tool and design in progress"],
     kpis: ["Adoption of inter-dept working processes", "Self-evaluation of cases to identify issues in own dept"],
     buckets: ["handover"], teams: ALL6, next: [], links: [] },
-  { name: "Advisor Quizzes", stage: "diagnose", status: "building",
+  { name: "Advisor Quizzes", stage: "diagnose", status: "building", progress: 20,
     why: "Gaps in advisor product knowledge on edge cases, with no accountability for low knowledge scores.",
     what: ["Restart advisor quizzes based on edge cases","Finalise format, frequency and weightage","Set passing threshold and score bands (Excellent / Acceptable / Needs Improvement / Critical)","Penalties for low scores","Operating guidelines with Training"],
     kpis: ["Reduce negative feedback in the bucket of advisors not being able to help in edge cases or alternate requirements"],
@@ -317,7 +310,7 @@ const I = [
       { t: "Set passing threshold and score bands", due: "2026-11-13" },
       { t: "Set operating guidelines with Training", due: "2026-11-30" },
     ], links: [] },
-  { name: "Advisor Intent Optimization", stage: "diagnose", status: "building",
+  { name: "Advisor Intent Optimization", stage: "diagnose", status: "building", progress: 35,
     why: "Recurring feedback on mis-selling, missed callbacks and rushed calls, with no structured corrective loop.",
     what: ["Flag advisor intent problems, advisors not calling and advisors rushing calls","Sources: feedback, call audits and sentiment signals","Log with evidence and validate via FME","Raise in Falcon's weekly pulse with advisor-wise breakdown and corrective action","Track repeat offenders"],
     kpis: ["Reduce negative feedback in advisor intent, not calling and rushing calls buckets", "Week-on-week reduction in flagged cases in Falcon's weekly pulse", "Fewer repeat offences per advisor after FME review"],
@@ -329,13 +322,13 @@ const I = [
       { t: "Review week-on-week trend and refine flagging criteria", due: "2026-11-30" },
     ], links: [] },
 
-  { name: "Term Video Engagement", stage: "fix", status: "live",
+  { name: "Term Video Engagement", stage: "fix", status: "live", progress: 100,
     why: "Leads lacked clarity on their policies and ideal cover during calls; verbal explanation alone wasn't enough.",
     what: ["Personalised interactive web app for first and additional Term call pitches","Explains policies, ideal cover, riders and milestones","PDF call summary for leads to take home is live"],
     kpis: ["Create a visual-aid experience for leads", "Improve conversion % and average QA score for advisors", "Improve additional call %"],
     buckets: ["clarity"], teams: ["falcon", "bliss"], next: [],
     links: [["Open app", "https://term-video-engagement-advisory.vercel.app"]] },
-  { name: "Health Video Engagement", stage: "fix", status: "building",
+  { name: "Health Video Engagement", stage: "fix", status: "building", progress: 60,
     why: "Leads lacked clarity on their policies and ideal cover during calls; verbal explanation alone wasn't enough.",
     what: ["Personalised interactive web app for first and additional Health call pitches","Explains policies, ideal sum insured, riders and milestones","Activ Yuva integration, maternity comparison and Telugu translation in progress"],
     kpis: ["Create a visual-aid experience for leads", "Improve conversion % and average QA score for advisors", "Improve additional call %"],
@@ -345,18 +338,18 @@ const I = [
       { t: "Build the restoration & bonus page" },
     ],
     links: [["Open app", "https://ditto-health-insurance-gray.vercel.app/"]] },
-  { name: "Soft Skill Sessions", stage: "fix", status: "live",
+  { name: "Soft Skill Sessions", stage: "fix", status: "live", progress: 100,
     why: "Recurring individual-level soft-skill misses (tone, empathy) were showing up in negative feedback.",
     what: ["1-1 sessions between the CX Champion and the case owner","Replay the actual case and isolate communication gaps","Correct tone and empathy, and agree the approach for next time","Improvement verified through QA audits of later cases"],
     kpis: ["Reduction in repetitive outlier cases at individual level"],
     buckets: ["robotic"], teams: ALL6, next: [], links: [] },
-  { name: "Falcon Image Generator", stage: "fix", status: "live",
+  { name: "Falcon Image Generator", stage: "fix", status: "live", progress: 90,
     why: "Move communication from long text to clear visuals.",
     what: ["Generates templated images for customer communication","Detailed comparison images and premium-payment snips","Term logos and IC member addition","Text wrapping in backlog"],
     kpis: ["Adoption of visual templates in communication (inferred)"],
     buckets: [], teams: [], teamNote: "Advisory / Ops (inferred)",
     next: [{ t: "Add the text-wrapping feature" }], links: [] },
-  { name: "Claims Checklist", stage: "fix", status: "building",
+  { name: "Claims Checklist", stage: "fix", status: "building", progress: 85,
     why: "Customers lacked clarity on claims requirements (inferred).",
     what: ["Customer-facing checklist for Claims","Foundational design done","Content collection from Claims in progress (backlog)"],
     kpis: ["Reduction in claims-related clarity complaints (inferred)"],
@@ -385,14 +378,14 @@ const I = [
       { t: "Complete data collection from Claims Ops owners" },
       { t: "Make final design/UI changes requested by Ops" },
     ], links: [] },
-  { name: "Infographics", stage: "fix", program: true, status: "building",
+  { name: "Infographics", stage: "fix", program: true, status: "building", progress: 60,
     why: "Post-payment communication was text-heavy, reactive and lacked timelines, leaving leads unclear on where their case stood.",
     what: ["TAT / timeline infographics for expectation setting","Templates rewritten to be clear, concise and less text-heavy","Hybrid text + infographic approach for post-payment communication","Pro-active updates and committed timelines for every action item"],
     kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach", "Lower detractor %"],
     buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops", "term"],
     next: [{ t: "Enforce committed timelines for every action item" }, { t: "Explain rejection / counter-offer reasons to leads and contest where viable" }],
     links: [["Open generator", "https://ops-image-gen.vercel.app"]] },
-  { name: "Call First Approach", stage: "fix", program: true, status: "building",
+  { name: "Call First Approach", stage: "fix", program: true, status: "building", progress: 50,
     why: "Complex cases handled only over chat caused confusion and negative feedback, including complaints about not receiving calls.",
     what: ["Identify situations that need a call","SOPs so service teams call leads in moderately to very complicated cases (e.g. rejection, counter-offer, long chat threads)","Call tracking metrics set up for all teams"],
     kpis: ["Reduce negative feedback in the 'call not received' bucket and overall negative feedback via pacifying / explanation calls"],
@@ -401,7 +394,7 @@ const I = [
       { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-10-27" },
       { t: "Ensure call-first approach for complex Ops cases (rejection, counter-offer, long chat threads)" },
     ], links: [] },
-  { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building",
+  { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building", progress: 40,
     why: "Agitated leads and likely escalations were handled in normal queue order; the sentiment analyser already flags them, so Ops can act on those cases first.",
     what: ["Uses the LLM sentiment analyser's flags (potential / tentative escalations, agitated leads)","Prioritises those Ops cases","Agitated leads are pacified and resolved first through the Action Centre process"],
     kpis: ["Reduction in tentative and actual escalations", "Faster resolution TAT for flagged / agitated leads (inferred)", "Lower detractor % among flagged leads (inferred)"],
@@ -412,14 +405,14 @@ const I = [
       { t: "Automate the sentiment analyser and map tentative escalations to it" },
       { t: "Add context insertion to the sentiment analyser" },
     ], links: [] },
-  { name: "6 Star – HNB", stage: "fix", program: true, status: "approval", progress: 65,
+  { name: "6 Star – HNB", stage: "fix", program: true, status: "building", progress: 65,
     why: "Health Ops owners delivering 6-star experiences had gone unrewarded under quarterly StarBonus restrictions.",
     what: ["Extends the 6 Star recognition model to Health New Business","SOP formulated","Deployment approach and pilot plan in final stages","Awaiting manager approval"],
     kpis: ["Better Health CX", "Recognition for Ops owners who consistently deliver 6-star experiences"],
     buckets: ["delayed", "reactive"], teams: ["hnb"],
     next: [{ t: "Finalise deployment & pilot plan" }, { t: "Secure manager approval" }, { t: "Launch pilot" }], links: [] },
 
-  { name: "6 Star", stage: "reward", status: "live",
+  { name: "6 Star", stage: "reward", status: "live", progress: 70,
     why: "Ops owners were acting as information relays instead of taking ownership of customer issues.",
     what: ["Encourage ops owners to act as true mediators and go above and beyond","Objective 6 Star SOP with eligibility gates for case selection","Integrated with the Star Bonus system","New quality stars for Health NB; 6 Star for Health planned"],
     kpis: ["Reduce negative feedback in the delayed responses and reactive approach buckets"],
@@ -429,12 +422,12 @@ const I = [
       { t: "Get the new quality stars finalised" },
       { t: "Extend 6 Star to Health (HNB pilot pending manager approval)" },
     ], links: [] },
-  { name: "Spotlight", stage: "reward", status: "live",
+  { name: "Spotlight", stage: "reward", status: "live", progress: 85,
     why: "Recognise high performers and spread their best practices to raise service standards across teams.",
     what: ["Department-wise feature recognising high-performing advisors and ops owners","Objective, metric-backed criteria (QA score, CSAT, resolution TAT) and real customer reviews","Rolled out for Term Ops, Renewals, Bliss, HNB and Falcon"],
     kpis: ["QA score, CSAT and resolution TAT of featured teams; adoption of highlighted best practices (inferred, not in tracker)"],
     buckets: [], teams: ALL6, next: [], links: [] },
-  { name: "CD Pulse", stage: "reward", status: "live",
+  { name: "CD Pulse", stage: "reward", status: "live", progress: 100,
     why: "Build a recognition culture across the company and drive participation in CX optimisation through public recognition.",
     what: ["Monthly internal newsletter spotlighting one employee's individual CX achievement","Standard template (review, metrics, photo)","Fixed cadence with a monthly nomination / vote cut-off","Poll to nominate the next department","Read / open-rate tracking","Quarterly DER mail added"],
     kpis: ["Increase in number of votes / participation", "Read / open rate per edition"],
@@ -462,7 +455,7 @@ $("statusbar").innerHTML = Object.entries(STATUS).map(([k, s]) => `<span style="
 const overdueCount = dated.filter(d => dueState(d.due) === "over").length;
 const byPriority = (a, b) => PRIORITIES.indexOf(PRIORITY[a.name]) - PRIORITIES.indexOf(PRIORITY[b.name]);
 const ptag = name => `<span class="ptag ${PRIORITY[name]}">${PRIORITY[name]}</span>`;
-// Ops Revamp shows as one Building card with its workstreams in a dropdown; 6 Star – HNB keeps its own Awaiting approval card.
+// Ops Revamp shows as one Building card with its workstreams in a dropdown.
 const OPS = I.filter(x => x.program);
 const kanbanItems = k => [...I.filter(x => x.status === k && !(x.program && k === "building")),
   ...(k === "building" ? [{ name: "Ops Revamp", subs: OPS }] : [])];
@@ -485,15 +478,12 @@ $("flywheel").innerHTML = STAGES.map(s => {
 
 const teamChips = x => (x.teamNote ? [x.teamNote] : x.teams.map(t => T[t])).map(t => `<span class="chip">${t}</span>`).join("");
 function card(x) {
-  const nextDated = x.next.find(n => n.due && dueState(n.due) === "over") || x.next.find(n => n.due);
   const st = STATUS[x.status];
   return `<article class="card">
     <div class="pills"><span class="pill ${x.status}">${st.label}</span>${isOverdue(x) ? `<span class="pill over">Overdue step</span>` : ""}</div>
     <h3>${x.name}</h3>
     <p class="why"><b>Why:</b> ${x.why}</p>
-    ${x.progress != null ? `<div class="prog"><div class="track" role="progressbar" aria-valuenow="${x.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${x.name} progress"><span style="width:${x.progress}%"></span></div>${x.progress}%</div>` : ""}
-    ${nextDated ? `<div class="nextline ${dueState(nextDated.due)}"><b>${fmt(nextDated.due)}</b> · ${nextDated.t}</div>` : ""}
-    <div class="chips">${teamChips(x)}</div>
+    ${x.progress != null ? `<div class="prog"><div class="track" role="progressbar" aria-valuenow="${x.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${x.name} progress"><span style="width:${x.progress}%"></span></div>${x.progress}%</div>` : ""}    <div class="chips">${teamChips(x)}</div>
     <details><summary>What it is, KPIs, next steps</summary><div class="det">
       <div><h4>What it is</h4><ul>${x.what.map(w => `<li>${w}</li>`).join("")}</ul></div>
       <div><h4>KPIs</h4><ol>${x.kpis.map(k => `<li>${k}</li>`).join("")}</ol></div>
@@ -539,7 +529,7 @@ function select(b, t) {
   const list = who(b, t);
   $("hmdetail").innerHTML = `<h3>${B[b]} · ${T[t]}</h3>` + (list.length
     ? `<ul>${list.map(x => `<li><b>${x.name}</b> <span class="muted">(${STATUS[x.status].label})</span></li>`).join("")}</ul>`
-    : `<p class="muted" style="margin:0">No initiative targets this yet. Possible gap.</p>`);
+    : `<p class="muted" style="margin:0">No initiative targets this yet.</p>`);
 }
 $("hm").addEventListener("click", e => { const el = e.target.closest("button"); if (el) select(el.dataset.b, el.dataset.t); });
 $("hm").addEventListener("mouseover", e => { const el = e.target.closest("button"); if (el) select(el.dataset.b, el.dataset.t); });
