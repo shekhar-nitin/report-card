@@ -441,8 +441,6 @@ const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date
 const fmt = s => parse(s).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 const SOON_DAYS = 14;
 const dueState = s => { const days = Math.round((parse(s) - today) / 864e5); return days < 0 ? "over" : days <= SOON_DAYS ? "soon" : "later"; };
-const relative = s => { const days = Math.round((parse(s) - today) / 864e5);
-  return days < 0 ? `${-days} day${days === -1 ? "" : "s"} overdue` : days === 0 ? "due today" : `in ${days} day${days === 1 ? "" : "s"}`; };
 
 const dated = I.flatMap(x => x.next.filter(n => n.due).map(n => ({ ...n, who: x.name })))
   .sort((a, b) => a.due.localeCompare(b.due));
@@ -540,5 +538,5 @@ select(max.b, max.t);
 // ---- timeline ----
 const byDate = dated.reduce((m, d) => ((m[d.due] ||= []).push(d), m), {});
 $("tl").innerHTML = Object.entries(byDate).map(([due, items]) => `<li class="${dueState(due)}"><span class="date">${fmt(due)}</span><span class="rail"></span>
-  <div class="items">${items.map(d => `<div class="item"><div>${d.t}<small>${relative(d.due)}</small></div><span class="projpill">${d.who}</span></div>`).join("")}</div></li>`).join("");
+  <div class="items">${items.map(d => `<div class="item"><div>${d.t}</div><span class="projpill">${d.who}</span></div>`).join("")}</div></li>`).join("");
 </script>
