@@ -230,7 +230,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
 
 
 <script>
-const T = { falcon: "Falcon", bliss: "Bliss", hren: "Health Renewals", hops: "Health Ops", term: "Term Ops", claims: "Claims" };
+const T = { falcon: "Falcon", bliss: "Bliss", hren: "Health Renewals", hops: "Health New Business", term: "Term Ops", claims: "Claims" };
 const ALL6 = ["falcon", "bliss", "hops", "hren", "term", "claims"];
 const B = {
   clarity: "Lack of clarity",
@@ -261,7 +261,7 @@ const PRIORITY = {
   "Lead Prioritisation using Sentiment Analyser": "High", "Advisor Intent Optimization": "High", "Health Video Engagement": "High",
   "Ops Profile Pages": "Medium", "Infographics": "Medium", "Advisor Quizzes": "Medium",
   "Claims Checklist": "Medium", "6 Star": "Medium",
-  "6 Star – Health Ops": "Medium",
+  "6 Star – Health New Business": "Medium",
   "Ops Revamp": "High",
 };
 
@@ -364,8 +364,8 @@ const I = [
     next: [{ t: "Incorporate changes from the Claims team's final product review" }, { t: "Go live (expected next week)" }], links: [["Open checklist", "https://ops-image-gen.vercel.app"]] },
 
   { name: "Ops–Advisory Communication", stage: "fix", program: true, status: "building", progress: 85,
-    why: "Health Ops raised issues with Bliss, and communication gaps between Ops and Advisory were hurting customers.",
-    what: ["Fix communication and case handover between Ops and Advisory","POV sessions with Term / Health Ops and advisors","Health Ops' doc on Bliss concerns; mentor sessions for Bliss & Falcon","SOP, case ownership and standard handover messages","Exact case-handover timelines","TAT monitoring dashboard via Action Centre","DittoHQ portal changes so advisors can see case progress and respond to leads themselves"],
+    why: "Health New Business raised issues with Bliss, and communication gaps between Ops and Advisory were hurting customers.",
+    what: ["Fix communication and case handover between Ops and Advisory","POV sessions with Term / Health New Business and advisors","Health New Business' doc on Bliss concerns; mentor sessions for Bliss & Falcon","SOP, case ownership and standard handover messages","Exact case-handover timelines","TAT monitoring dashboard via Action Centre","DittoHQ portal changes so advisors can see case progress and respond to leads themselves"],
     kpis: ["Shorter case-handover TAT", "Fewer Ops–Advisory communication gaps / better inter-dept communication efficiency"],
     buckets: ["delayed", "handover"], teams: ["hops", "falcon", "bliss"],
     next: [      { t: "Implement exact case-handover timelines" },
@@ -380,11 +380,11 @@ const I = [
       { t: "Tech team to complete development and deployment", due: "2026-10-31" },
       { t: "Complete data collection from Claims Ops owners" },
       { t: "Make final design/UI changes requested by Ops" },
-    ], links: [] },
+    ], links: [["Open designs", "https://www.figma.com/design/Day8pXvOxG6CdvZluRgZxx/Ops-Owner-Pages?node-id=3-2"]] },
   { name: "Infographics", stage: "fix", program: true, status: "building", progress: 60,
     why: "Post-payment communication was text-heavy, reactive and lacked timelines, leaving leads unclear on where their case stood.",
     what: ["TAT / timeline infographics for expectation setting","Templates rewritten to be clear, concise and less text-heavy","Hybrid text + infographic approach for post-payment communication","Pro-active updates and committed timelines for every action item"],
-    kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach", "Lower detractor %"],
+    kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach"],
     buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops"],
     next: [{ t: "Enforce committed timelines for every action item" }, { t: "Explain rejection / counter-offer reasons to leads and contest where viable" }],
     links: [["Open generator", "https://ops-image-gen.vercel.app"]] },
@@ -408,26 +408,26 @@ const I = [
       { t: "Automate the sentiment analyser and map tentative escalations to it" },
       { t: "Add context insertion to the sentiment analyser" },
     ], links: [] },
-  { name: "6 Star – Health Ops", stage: "fix", program: true, status: "building", progress: 65,
-    why: "Health Ops owners delivering 6-star experiences had gone unrewarded under quarterly StarBonus restrictions.",
-    what: ["Extends the 6 Star recognition model to Health Ops","SOP formulated","Deployment approach and pilot plan in final stages","Awaiting manager approval"],
+  { name: "6 Star – Health New Business", stage: "fix", program: true, status: "building", progress: 65,
+    why: "Health New Business owners delivering 6-star experiences had gone unrewarded under quarterly StarBonus restrictions.",
+    what: ["Extends the 6 Star recognition model to Health New Business","SOP formulated","Deployment approach and pilot plan in final stages","Awaiting manager approval"],
     kpis: ["Better Health CX", "Recognition for Ops owners who consistently deliver 6-star experiences"],
     buckets: ["delayed", "reactive"], teams: ["hops"],
     next: [{ t: "Finalise deployment & pilot plan" }, { t: "Secure manager approval" }, { t: "Launch pilot" }], links: [] },
 
   { name: "6 Star", stage: "reward", status: "live", progress: 70,
     why: "Ops owners were acting as information relays instead of taking ownership of customer issues.",
-    what: ["Encourage ops owners to act as true mediators and go above and beyond","Objective 6 Star SOP with eligibility gates for case selection","Integrated with the Star Bonus system","New quality stars for Health Ops; 6 Star for Health planned"],
+    what: ["Encourage ops owners to act as true mediators and go above and beyond","Objective 6 Star SOP with eligibility gates for case selection","Integrated with the Star Bonus system","New quality stars for Health New Business; 6 Star for Health planned"],
     kpis: ["Reduce negative feedback in the delayed responses and reactive approach buckets"],
     buckets: ["delayed", "reactive"], teams: ["term"],
     next: [
       { t: "Integrate the updated 6 Star SOP into the new StarBonus system" },
       { t: "Get the new quality stars finalised" },
-      { t: "Extend 6 Star to Health (Health Ops pilot pending manager approval)" },
+      { t: "Extend 6 Star to Health (Health New Business pilot pending manager approval)" },
     ], links: [] },
   { name: "Spotlight", stage: "reward", status: "live", progress: 100,
     why: "Recognise high performers and spread their best practices to raise service standards across teams.",
-    what: ["Department-wise feature recognising high-performing advisors and ops owners","Objective, metric-backed criteria (QA score, CSAT, resolution TAT) and real customer reviews","Rolled out for Term Ops, Renewals, Bliss, Health Ops and Falcon"],
+    what: ["Department-wise feature recognising high-performing advisors and ops owners","Objective, metric-backed criteria (QA score, CSAT, resolution TAT) and real customer reviews","Rolled out for Term Ops, Renewals, Bliss, Health New Business and Falcon"],
     kpis: ["QA score, CSAT and resolution TAT of featured teams; adoption of highlighted best practices"],
     buckets: [], teams: ALL6, next: [], links: [] },
   { name: "CD Pulse", stage: "reward", status: "live", progress: 100,
