@@ -220,9 +220,7 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
     </div>
     <div class="hm-scroll"><table class="hm" id="hm"></table></div>
     <div class="scale" id="scale"></div>
-    <div class="hm-detail" id="hmdetail" aria-live="polite"></div>
-    <p class="muted" style="margin:0;font-size:12px">Not in the grid: Cortex, Feedback Pipeline, Spotlight and CD Pulse cover every bucket and team. The tracker doesn't name target teams for Falcon Image Generator.</p>
-  </div>
+    <div class="hm-detail" id="hmdetail" aria-live="polite"></div>  </div>
 </section>
 
 <section class="band" id="deadlines">
@@ -251,10 +249,10 @@ const B = {
   intent: "Advisor intent, missed or rushed calls",
 };
 const STAGES = [
-  { id: "listen", name: "Listen", purpose: "Capture every customer signal in one scored view" },
-  { id: "diagnose", name: "Diagnose", purpose: "Find where, and in whose hands, the experience breaks" },
-  { id: "fix", name: "Fix", purpose: "Change the process, the tools and the conversation" },
-  { id: "reward", name: "Reward", purpose: "Recognise the people who deliver great CX" },
+  { id: "listen", name: "Listen", purpose: "Primary medium through which we receive feedback are feedback forms, we go through all feedback, both positive and negative regularly and set up pipelines at customer friction points to collect more feedback for optimising their experience." },
+  { id: "diagnose", name: "Diagnose", purpose: "Customer Feedback is often vaguely pointing to a problem, we need to diagnose each feedback and understand if it is an issue in that point in the pipeline or an upstream or downstream issue." },
+  { id: "fix", name: "Fix", purpose: "Once we have diagnosed the issue we focus on bringing changes that enhance customer experience without majorly disrupting the departmental operations. Changes are small or tectonic based on the customer grievances and departmental processes." },
+  { id: "reward", name: "Reward", purpose: "Recognise the people who deliver great CX." },
 ];
 const STATUS = {
   live: { label: "Live", color: "var(--secondary-500)" },
@@ -476,9 +474,8 @@ $("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}
   : `<li><span class="when">✓</span><span>Nothing overdue or due in the next ${SOON_DAYS} days.</span></li>`;
 
 // ---- flywheel + stages ----
-$("flywheel").innerHTML = STAGES.map((s, i) => {
-  const n = I.filter(x => x.stage === s.id).length;
-  return `<a class="stage" href="#${s.id}"><span class="n">Stage ${i + 1}</span><strong>${s.name}</strong><span class="c">${s.purpose}</span><span class="c"><b style="color:var(--txt)">${n}</b> initiatives</span></a>`;
+$("flywheel").innerHTML = STAGES.map(s => {
+  return `<a class="stage" href="#${s.id}"><strong>${s.name}</strong><span class="c">${s.purpose}</span></a>`;
 }).join("");
 
 const teamChips = x => (x.teamNote ? [x.teamNote] : x.teams.map(t => T[t])).map(t => `<span class="chip">${t}</span>`).join("");
@@ -504,7 +501,7 @@ $("stages").innerHTML = STAGES.map((s, i) => {
   const items = I.filter(x => x.stage === s.id && !x.program);
   const prog = I.filter(x => x.stage === s.id && x.program);
   return `<section class="band ${i % 2 ? "gray" : ""}" id="${s.id}"><div class="wrap">
-    <div class="head"><div class="tag">Stage ${i + 1} of 4</div><h2>${s.name}</h2><p class="lede">${s.purpose}.</p></div>
+    <div class="head"><div class="tag">Stage ${i + 1} of 4</div><h2>${s.name}</h2><p class="lede">${s.purpose}</p></div>
     <div class="grid">${items.map(card).join("")}</div>
     ${prog.length ? `<div class="program"><div class="head"><div class="tag">Program · ${prog.length} workstreams</div><h3>Ops Revamp</h3><p class="why" style="max-width:62ch">Fixing how Ops talks to customers and hands cases to Advisory: faster handovers, a human face, clearer timelines and calls when chat isn't enough.</p></div><div class="grid">${prog.map(card).join("")}</div></div>` : ""}
   </div></section>`;
