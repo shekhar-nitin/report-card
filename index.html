@@ -74,17 +74,6 @@ h3 { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: var(-
 .kgroup li .dot { width: 8px; height: 8px; }
 .dot { width: 10px; height: 10px; border-radius: 9999px; flex: none; }
 
-.attn-panel { grid-template-rows: auto 1fr; align-content: stretch; }
-.attn { display: grid; grid-auto-rows: 1fr; gap: 12px; margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 24px; }
-.attn li { display: grid; grid-template-columns: 72px 1fr; gap: 8px 12px; align-content: center; padding: 16px 20px; border-radius: 12px; background: var(--bg-gray); }
-.attn li.over { background: var(--status-error-bg); }
-.attn .when { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.attn li.over .when { color: var(--status-error-text); }
-.attn .who { font-size: 12px; line-height: 16px; color: var(--txt-light); grid-column: 2; }
-.attn .projpill { grid-row: 1; grid-column: 2; justify-self: start; }
-.attn .when { grid-row: 1; grid-column: 1; align-self: center; }
-.attn .step { grid-column: 2; }
-
 /* Flywheel */
 .flywheel { display: grid; gap: 12px; grid-template-columns: 1fr; }
 .stage { display: grid; gap: 4px; padding: 16px 20px; border-radius: 12px; background: var(--white); border: 1px solid var(--gray-200); text-decoration: none; color: var(--txt); position: relative; transition: box-shadow .15s; }
@@ -169,7 +158,6 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
   h2 { font-size: 36px; line-height: 40px; }
   .band { padding-block: 80px; }
   .hero { padding-block: 96px 64px; }
-  .attn { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .flywheel { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .stage:not(:last-child)::after { content: "→"; position: absolute; right: -22px; top: 50%; transform: translateY(-50%); color: var(--primary-500); font-size: 18px; font-weight: 600; }
@@ -187,10 +175,6 @@ table.hm { border-collapse: separate; border-spacing: 2px; width: 100%; min-widt
         <div style="display:flex;align-items:baseline;gap:12px"><span class="big" id="total"></span><span class="muted" style="font-size:20px;line-height:28px">initiatives in flight</span></div>
         <div class="statusbar" id="statusbar"></div>
         <div class="kanban" id="statuslegend"></div>      </div>
-      <div class="panel attn-panel">
-        <h3>Upcoming Deadlines</h3>
-        <ul class="attn" id="attn"></ul>
-      </div>
     </div>
   </div>
 </header>
@@ -283,9 +267,7 @@ const I = [
     kpis: ["Track pain points dept-wise and overall to reduce negative feedback in each bucket, identify new buckets and optimise CX in them"],
     buckets: [], teams: ALL6,
     next: [
-      { t: "Introduce 4 new feedback collection points for Claims", due: "2026-10-30" },
       { t: "Claims forms: Claims team to raise the automation requirement to the Product team" },
-      { t: "Term Rejected/Postponed & Cancelled forms automation: Product team to implement and take live", due: "2026-10-28" },
     ], links: [["CSAT Sheet", "https://docs.google.com/spreadsheets/d/1Zi7Oy2WQkacxZl5vas3WOmiUz038SKYsvXgevz6OmA8/edit?usp=sharing"], ["Data Dissemination Pipelines Docs", "https://docs.google.com/document/d/1ewRwButQYm4xtrSIefqZ9YcCIUotW2LcUvTIhpYmYG4/edit?usp=sharing"]] },
   { name: "LLM Sentiment Analyser", stage: "listen", status: "live", progress: 80,
     why: "Escalations and agitated leads were only caught after the fact, with no way to scan chat volume and intervene before a case escalated.",
@@ -396,7 +378,7 @@ const I = [
     kpis: ["Reduce negative feedback in the 'call not received' bucket and overall negative feedback via pacifying / explanation calls"],
     buckets: ["call", "clarity", "reactive"], teams: ["hops", "hren"],
     next: [
-      { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-10-27" },
+      { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-11-01" },
       { t: "Ensure call-first approach for complex Ops cases (rejection, counter-offer, long chat threads)" },
     ], links: [] },
   { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building", progress: 40,
@@ -467,10 +449,6 @@ $("statuslegend").innerHTML = Object.entries(STATUS).map(([k, s]) => `<div class
     ${kanbanItems(k).sort(byPriority).map(x => x.subs ? opsCard(x) : `<div class="kcard"><span>${x.name}</span>${ptag(x.name)}</div>`).join("")}
   </div>`).join("");
 if (overdueCount) $("statuslegend").insertAdjacentHTML("afterend", `<div class="legend"><div><span class="dot" style="background:var(--status-error-text)"></span><b>${overdueCount}</b> overdue commitment${overdueCount === 1 ? "" : "s"}</div></div>`);
-
-const attn = dated.filter(d => dueState(d.due) !== "later");
-$("attn").innerHTML = attn.length ? attn.map(d => `<li class="${dueState(d.due)}"><span class="projpill">${d.who}</span><span class="when">${fmt(d.due)}</span><span class="step">${d.t}</span></li>`).join("")
-  : `<li><span class="when">✓</span><span>Nothing overdue or due in the next ${SOON_DAYS} days.</span></li>`;
 
 // ---- flywheel + stages ----
 $("flywheel").innerHTML = STAGES.map(s => {
