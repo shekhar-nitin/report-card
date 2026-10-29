@@ -369,6 +369,7 @@ const I = [
     why: "Post-payment communication was text-heavy, reactive and lacked timelines, leaving leads unclear on where their case stood.",
     what: ["TAT / timeline infographics for expectation setting","Templates rewritten to be clear, concise and less text-heavy","Hybrid text + infographic approach for post-payment communication","Pro-active updates and committed timelines for every action item"],
     kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach"],
+    pilot: ["Assign 3 Ops owners with a case load of around 800–900 cases per month and start the pilot for Care"],
     buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops"],
     next: [{ t: "Integrate in CRM for automation" }],
     links: [["Open generator", "https://ops-image-gen.vercel.app"]] },
@@ -465,7 +466,7 @@ function card(x) {
     ${x.progress != null ? `<div class="prog"><div class="track" role="progressbar" aria-valuenow="${x.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${x.name} progress"><span style="width:${x.progress}%"></span></div>${x.progress}%</div>` : ""}    <div class="chips">${teamChips(x)}</div>
     <details><summary>What it is, KPIs, next steps</summary><div class="det">
       <div><h4>What it is</h4><ul>${x.what.map(w => `<li>${w}</li>`).join("")}</ul></div>
-      <div><h4>${x.kpiLabel || "KPIs"}</h4><ol>${x.kpis.map(k => `<li>${k}</li>`).join("")}</ol></div>
+      <div><h4>${x.kpiLabel || "KPIs"}</h4><ol>${x.kpis.map(k => `<li>${k}</li>`).join("")}</ol></div>${x.pilot ? `<div><h4>Pilot Plan</h4><ol>${x.pilot.map(k => `<li>${k}</li>`).join("")}</ol></div>` : ""}
       <div><h4>${x.nextLabel || "Next steps"}${x.nextDue ? ` <span class="d">(due ${fmt(x.nextDue)})</span>` : ""}</h4>${x.next.length ? `<ol>${x.next.map(n => `<li>${n.t}${n.due ? ` <span class="d">(due ${fmt(n.due)})</span>` : ""}</li>`).join("")}</ol>` : `<p class="muted">-</p>`}</div>
       ${x.links.length ? `<div class="links">${x.links.map(([l, h]) => `<a href="${h}" target="_blank" rel="noopener">${l} ↗</a>`).join("")}</div>` : ""}
     </div></details>
