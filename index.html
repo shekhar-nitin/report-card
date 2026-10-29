@@ -370,7 +370,7 @@ const I = [
     what: ["TAT / timeline infographics for expectation setting","Templates rewritten to be clear, concise and less text-heavy","Hybrid text + infographic approach for post-payment communication","Pro-active updates and committed timelines for every action item"],
     kpis: ["Reduced negative feedback for lack of clarity, robotic communication, delayed response and reactive approach"],
     buckets: ["clarity", "robotic", "delayed", "reactive"], teams: ["hops"],
-    next: [{ t: "Enforce committed timelines for every action item" }, { t: "Explain rejection / counter-offer reasons to leads and contest where viable" }],
+    next: [{ t: "Integrate in CRM for automation" }],
     links: [["Open generator", "https://ops-image-gen.vercel.app"]] },
   { name: "Call First Approach", stage: "fix", program: true, status: "building", progress: 50,
     why: "Complex cases handled only over chat caused confusion and negative feedback, including complaints about not receiving calls.",
@@ -381,7 +381,7 @@ const I = [
       { t: "Finalise and roll out calling SOPs so service teams take a call-first approach on difficult cases", due: "2026-11-01" },
       { t: "Identify call first cases using LLM and track placed calls" },
     ], links: [] },
-  { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building", progress: 40,
+  { name: "Lead Prioritisation using Sentiment Analyser", stage: "fix", program: true, status: "building", progress: 40, kpiLabel: "Pilot Plan",
     why: "Agitated leads and likely escalations were handled in normal queue order; the sentiment analyser already flags them, so Ops can act on those cases first.",
     what: ["Uses the LLM sentiment analyser's flags (potential/tentative escalations, agitated leads)","Prioritises those Ops cases","Agitated leads are pacified and resolved first through the Action Centre process"],
     kpis: ["Identify top 5 ops owners with maximum angry and at risk chats", "Give them a daily dump via action center for resolution of issues"],
@@ -465,7 +465,7 @@ function card(x) {
     ${x.progress != null ? `<div class="prog"><div class="track" role="progressbar" aria-valuenow="${x.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${x.name} progress"><span style="width:${x.progress}%"></span></div>${x.progress}%</div>` : ""}    <div class="chips">${teamChips(x)}</div>
     <details><summary>What it is, KPIs, next steps</summary><div class="det">
       <div><h4>What it is</h4><ul>${x.what.map(w => `<li>${w}</li>`).join("")}</ul></div>
-      <div><h4>KPIs</h4><ol>${x.kpis.map(k => `<li>${k}</li>`).join("")}</ol></div>
+      <div><h4>${x.kpiLabel || "KPIs"}</h4><ol>${x.kpis.map(k => `<li>${k}</li>`).join("")}</ol></div>
       <div><h4>${x.nextLabel || "Next steps"}${x.nextDue ? ` <span class="d">(due ${fmt(x.nextDue)})</span>` : ""}</h4>${x.next.length ? `<ol>${x.next.map(n => `<li>${n.t}${n.due ? ` <span class="d">(due ${fmt(n.due)})</span>` : ""}</li>`).join("")}</ol>` : `<p class="muted">-</p>`}</div>
       ${x.links.length ? `<div class="links">${x.links.map(([l, h]) => `<a href="${h}" target="_blank" rel="noopener">${l} ↗</a>`).join("")}</div>` : ""}
     </div></details>
